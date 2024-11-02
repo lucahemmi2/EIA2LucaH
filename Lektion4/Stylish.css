@@ -1,0 +1,70 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.task-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+    color: black;
+}
+
+.task {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.task.overdue {
+    background-color: #ffdddd;
+    border-color: #ff0000;
+}
+
+.task h2 {
+    margin: 0;
+    font-size: .5cm;
+    color: #333;
+}
+
+.task p {
+    margin: 5px 0;
+    color: #333;
+}
+
+.task button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.task button:hover {
+    background-color: #d32f2f;
+}
+
+.edit-btn {
+    background-color: #4caf50;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #388e3c;
+}
