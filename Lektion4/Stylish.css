@@ -68,3 +68,43 @@ h1 {
 .edit-btn:hover {
     background-color: #388e3c;
 }
+
+form {
+    background-color: rgb(181, 181, 181);
+    padding: 15px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    position: fixed;
+    left: 70%;
+    width: 250px;
+    top: 300px;
+    text-align: center;
+    font-size: x-large;
+}
+
+form:hover {
+    background-color: rgba(169, 169, 169);
+}
+
+.submit {
+    margin-top: 10px;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    width: 185px;
+}
+
+.formElement {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: rgba (190, 190, 190);
+    color: black;
+    width: 185px;
+}

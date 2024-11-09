@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="Stylish.css"/>
- </head>
+    <script defer src="Typescript.js"></script>
+    </head>
 <body>
     <div class="task-container">
         <h1>Aufgabenliste</h1>
@@ -20,7 +21,7 @@
                 <button>Löschen</button>
             </div>
         </div>
-        
+
         <div class="task in-progress">
             <h2>Einkaufen</h2>
             <p><strong>Fällig bis:</strong> Montag, 18 Uhr</p>
@@ -31,7 +32,15 @@
                 <button>Löschen</button>
             </div>
         </div>
-        <button class="edit-btn">Neue Aufgabe hinzufügen</button>
+            
+        </div>
     </div>
+    <form id="task-form" class="hidden">
+        <input class="formElement" type="text" id="task-title" placeholder="Titel der Aufgabe" required>
+        <input class="formElement" type="datetime-local" id="task-due-date" required>
+        <input class="formElement" type="text" id="task-assignee" placeholder="Bearbeiter" required>
+        <input class="formElement" type="text" id="task-comment" placeholder="Kommentar" required>
+        <button type="submit" class="submit">Aufgabe hinzufügen</button>
+    </form>
 </body>
 </html>
