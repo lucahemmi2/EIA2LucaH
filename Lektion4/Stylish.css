@@ -108,3 +108,7 @@ form:hover {
     color: black;
     width: 185px;
 }
+
+.hidden {
+    display: none;
+}

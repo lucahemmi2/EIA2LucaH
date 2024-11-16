@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Bett machen",
+        "dueDate": "2024-11-30T15:00:00Z",
+        "assignee": "Coline",
+        "comment": "Kein Kommentar"
+    },
+    {
+        "title": "Gaumenschmaus",
+        "dueDate": "2024-12-01T10:00:00Z",
+        "assignee": "Luca",
+        "comment": "1x halbe Hähnchen, 2x große Pommes"
+    },
+    {
+        "title": "Putzen",
+        "dueDate": "2024-12-30T15:00:23Z",
+        "assignee": "luca",
+        "comment": "nicht nur so tun als ob"
+    }
+]

@@ -10,7 +10,6 @@
 <body>
     <div class="task-container">
         <h1>Aufgabenliste</h1>
-        
         <div class="task overdue">
             <h2>Kloputzen</h2>
             <p><strong>Fällig bis:</strong> Gestern Abend <p>
@@ -35,12 +34,14 @@
             
         </div>
     </div>
-    <form id="task-form" class="hidden">
+    <form id="task-form">
         <input class="formElement" type="text" id="task-title" placeholder="Titel der Aufgabe" required>
         <input class="formElement" type="datetime-local" id="task-due-date" required>
         <input class="formElement" type="text" id="task-assignee" placeholder="Bearbeiter" required>
         <input class="formElement" type="text" id="task-comment" placeholder="Kommentar" required>
         <button type="submit" class="submit">Aufgabe hinzufügen</button>
     </form>
+    <div id="loading-indicator" class="hidden">Daten werden geladen...</div>
+
 </body>
 </html>

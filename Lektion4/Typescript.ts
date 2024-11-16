@@ -1,19 +1,29 @@
+// Typdefinitionen für eventuelle Elemente
+const form = document.getElementById("task-form") as HTMLFormElement;
+const taskContainer = document.querySelector(".task-container") as HTMLElement;
+const newTaskButton = document.querySelector(".edit-btn") as HTMLButtonElement;
+const loadingIndicator = document.getElementById("loading-indicator") as HTMLElement;
+
+// Sichtbarkeit des Formulars umschalten
 function toggleForm() {
-    const form = document.getElementById("task-form") as HTMLFormElement;
-    form.classList.toggle("hidden");
+    if (form) {
+        form.classList.toggle("hidden");
+    }
 }
 
-function addTask(event: Event) {
+// Aufgabe hinzufügen und an Server senden
+async function addTask(event: Event) {
     event.preventDefault();
 
+    // Eingabewerte erfassen
     const title = (document.getElementById("task-title") as HTMLInputElement).value;
     const dueDate = (document.getElementById("task-due-date") as HTMLInputElement).value;
     const assignee = (document.getElementById("task-assignee") as HTMLInputElement).value;
     const comment = (document.getElementById("task-comment") as HTMLInputElement).value;
 
+    // Neue Aufgabe anzeigen
     const taskDiv = document.createElement("div");
     taskDiv.classList.add("task");
-
     taskDiv.innerHTML = `
         <h2>${title}</h2>
         <p><strong>Fällig bis:</strong> ${new Date(dueDate).toLocaleString()}</p>
@@ -25,31 +35,45 @@ function addTask(event: Event) {
         </div>
     `;
 
+    // Bearbeiten- und Löschen-Funktionalität hinzufügen
     const editButton = taskDiv.querySelector(".edit-btn") as HTMLButtonElement;
     editButton.addEventListener("click", () => editTask(taskDiv, title, dueDate, assignee, comment));
-
     const deleteButton = taskDiv.querySelector(".delete-btn") as HTMLButtonElement;
     deleteButton.addEventListener("click", () => deleteTask(taskDiv));
 
-    const taskContainer = document.querySelector(".task-container") as HTMLDivElement;
-    taskContainer.appendChild(taskDiv);
+    // Aufgabe zum Container hinzufügen
+    if (taskContainer) {
+        taskContainer.appendChild(taskDiv);
+    }
 
-    (document.getElementById("task-form") as HTMLFormElement).reset();
+    form.reset();
     toggleForm();
+
+    // Server über die neue Aufgabe benachrichtigen
+    showLoadingIndicator(true);
+    try {
+        await fetch("https://example.com/api/addTask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, dueDate, assignee, comment })
+        });
+    } catch (error) {
+        console.error("Fehler beim Senden der Aufgabe:", error);
+    } finally {
+        showLoadingIndicator(false);
+    }
 }
 
-function editTask(taskDiv: HTMLDivElement, title: string, dueDate: string, assignee: string, comment: string) {
+// Bearbeiten einer vorhandenen Aufgabe
+function editTask(taskDiv: HTMLElement, title: string, dueDate: string, assignee: string, comment: string) {
     (document.getElementById("task-title") as HTMLInputElement).value = title;
     (document.getElementById("task-due-date") as HTMLInputElement).value = dueDate;
     (document.getElementById("task-assignee") as HTMLInputElement).value = assignee;
     (document.getElementById("task-comment") as HTMLInputElement).value = comment;
-
     toggleForm();
 
-    const taskForm = document.getElementById("task-form") as HTMLFormElement;
-    taskForm.onsubmit = (event) => {
+    form.onsubmit = (event: Event) => {
         event.preventDefault();
-
         const newTitle = (document.getElementById("task-title") as HTMLInputElement).value;
         const newDueDate = (document.getElementById("task-due-date") as HTMLInputElement).value;
         const newAssignee = (document.getElementById("task-assignee") as HTMLInputElement).value;
@@ -66,23 +90,67 @@ function editTask(taskDiv: HTMLDivElement, title: string, dueDate: string, assig
             </div>
         `;
 
+        // Event-Listener wieder hinzufügen
         const editButton = taskDiv.querySelector(".edit-btn") as HTMLButtonElement;
         editButton.addEventListener("click", () => editTask(taskDiv, newTitle, newDueDate, newAssignee, newComment));
-
         const deleteButton = taskDiv.querySelector(".delete-btn") as HTMLButtonElement;
         deleteButton.addEventListener("click", () => deleteTask(taskDiv));
 
-            taskForm.reset();
+        form.reset();
         toggleForm();
     };
 }
 
-function deleteTask(taskDiv: HTMLDivElement) {
+// Löschen einer Aufgabe
+function deleteTask(taskDiv: HTMLElement) {
     taskDiv.remove();
 }
 
-const newTaskButton = document.querySelector(".edit-btn") as HTMLButtonElement;
-newTaskButton.addEventListener("click", toggleForm);
+// Laden der Startdaten aus JSON-Datei
+async function loadInitialData() {
+    showLoadingIndicator(true);
+    try {
+        const response = await fetch("tasks.json");
+        const tasks = await response.json();
+        tasks.forEach((task: { title: string; dueDate: string; assignee: string; comment: string }) => {
+            addTaskToUI(task.title, task.dueDate, task.assignee, task.comment);
+        });
+    } catch (error) {
+        console.error("Fehler beim Laden der Startdaten:", error);
+    } finally {
+        showLoadingIndicator(false);
+    }
+}
 
-const taskForm = document.getElementById("task-form") as HTMLFormElement;
-taskForm.addEventListener("submit", addTask);
+// Aufgabe zur Benutzeroberfläche hinzufügen
+function addTaskToUI(title: string, dueDate: string, assignee: string, comment: string) {
+    const taskDiv = document.createElement("div");
+    taskDiv.classList.add("task");
+    taskDiv.innerHTML = `
+        <h2>${title}</h2>
+        <p><strong>Fällig bis:</strong> ${new Date(dueDate).toLocaleString()}</p>
+        <p><strong>Bearbeiter:</strong> ${assignee}</p>
+        <p><strong>Kommentar:</strong> ${comment}</p>
+        <div class="task-footer">
+            <button class="edit-btn">Bearbeiten</button>
+            <button class="delete-btn">Löschen</button>
+        </div>
+    `;
+    const editButton = taskDiv.querySelector(".edit-btn") as HTMLButtonElement;
+    editButton.addEventListener("click", () => editTask(taskDiv, title, dueDate, assignee, comment));
+    const deleteButton = taskDiv.querySelector(".delete-btn") as HTMLButtonElement;
+    deleteButton.addEventListener("click", () => deleteTask(taskDiv));
+    taskContainer.appendChild(taskDiv);
+}
+
+// Anzeige für den Ladeprozess ein- und ausschalten
+function showLoadingIndicator(visible: boolean) {
+    if (loadingIndicator) {
+        loadingIndicator.classList.toggle("hidden", !visible);
+    }
+}
+
+// Event-Listener initialisieren
+newTaskButton.addEventListener("click", toggleForm);
+form.addEventListener("submit", addTask);
+document.addEventListener("DOMContentLoaded", loadInitialData);
