@@ -16,5 +16,14 @@
         "dueDate": "2024-12-30T15:00:23Z",
         "assignee": "luca",
         "comment": "nicht nur so tun als ob"
+    },
+    {
+        "title": "Auto waschen",
+        "dueDate": "2024-12-30T15:00:23Z",
+        "assignee": "luca",
+        "comment": "gründlich"
+    },
+    {
+        "title": ""
     }
 ]
