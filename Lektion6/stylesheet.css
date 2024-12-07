@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fcfcfc;
+    height: 100vh;
+    overflow: hidden; /* Verhindert Scrollbalken, wenn der Canvas größer ist */
+}
+
+canvas {
+    display: block; /* Entfernt das Standard-Canvas-Block-Spacing */
+    width: 100%; /* Füllt die Breite des Containers */
+    height: 100%; /* Passt die Höhe an die Breite an */
+    max-width: 100vw; /* Verhindert, dass das Canvas breiter als der Bildschirm wird */
+    max-height: 100vh; /* Verhindert, dass das Canvas höher als der Bildschirm wird */
+    object-fit: cover; /* Cropped und responsive Darstellung wie bei einem Foto */
+}
+    
