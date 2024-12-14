@@ -4,111 +4,27 @@ const form = document.getElementById("task-form");
 const taskContainer = document.querySelector(".task-container");
 const newTaskButton = document.querySelector(".edit-btn");
 const loadingIndicator = document.getElementById("loading-indicator");
+// Zentrale Funktion für CRUD-Operationen
+async function executeQuery(command, data = {}) {
+    const url = "https://7c8644f9-f81d-49cd-980b-1883574694b6.fr.bw-cloud-instance.org/lhe48151/mingidb.php";
+    const query = new URLSearchParams();
+    query.set("command", command);
+    query.set("collection", "Tasks");
+    query.set("data", JSON.stringify(data));
+    try {
+        const response = await fetch(`${url}?${query.toString()}`, { method: "GET" });
+        const result = await response.json();
+        console.log(`MingiDB ${command} Response:`, result);
+        return result;
+    }
+    catch (error) {
+        console.error(`MingiDB ${command} Error:`, error);
+    }
+}
 // Sichtbarkeit des Formulars umschalten
 function toggleForm() {
     if (form) {
         form.classList.toggle("hidden");
-    }
-}
-// Aufgabe hinzufügen und an Server senden
-async function addTask(event) {
-    event.preventDefault();
-    // Eingabewerte erfassen
-    const title = document.getElementById("task-title").value;
-    const dueDate = document.getElementById("task-due-date").value;
-    const assignee = document.getElementById("task-assignee").value;
-    const comment = document.getElementById("task-comment").value;
-    // Neue Aufgabe anzeigen
-    const taskDiv = document.createElement("div");
-    taskDiv.classList.add("task");
-    taskDiv.innerHTML = `
-        <h2>${title}</h2>
-        <p><strong>Fällig bis:</strong> ${new Date(dueDate).toLocaleString()}</p>
-        <p><strong>Bearbeiter:</strong> ${assignee}</p>
-        <p><strong>Kommentar:</strong> ${comment}</p>
-        <div class="task-footer">
-            <button class="edit-btn">Bearbeiten</button>
-            <button class="delete-btn">Löschen</button>
-        </div>
-    `;
-    // Bearbeiten- und Löschen-Funktionalität hinzufügen
-    const editButton = taskDiv.querySelector(".edit-btn");
-    editButton.addEventListener("click", () => editTask(taskDiv, title, dueDate, assignee, comment));
-    const deleteButton = taskDiv.querySelector(".delete-btn");
-    deleteButton.addEventListener("click", () => deleteTask(taskDiv));
-    // Aufgabe zum Container hinzufügen
-    if (taskContainer) {
-        taskContainer.appendChild(taskDiv);
-    }
-    form.reset();
-    toggleForm();
-    // Server über die neue Aufgabe benachrichtigen
-    showLoadingIndicator(true);
-    try {
-        await fetch("https://example.com/api/addTask", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title, dueDate, assignee, comment })
-        });
-    }
-    catch (error) {
-        console.error("Fehler beim Senden der Aufgabe:", error);
-    }
-    finally {
-        showLoadingIndicator(false);
-    }
-}
-// Bearbeiten einer vorhandenen Aufgabe
-function editTask(taskDiv, title, dueDate, assignee, comment) {
-    document.getElementById("task-title").value = title;
-    document.getElementById("task-due-date").value = dueDate;
-    document.getElementById("task-assignee").value = assignee;
-    document.getElementById("task-comment").value = comment;
-    toggleForm();
-    form.onsubmit = (event) => {
-        event.preventDefault();
-        const newTitle = document.getElementById("task-title").value;
-        const newDueDate = document.getElementById("task-due-date").value;
-        const newAssignee = document.getElementById("task-assignee").value;
-        const newComment = document.getElementById("task-comment").value;
-        taskDiv.innerHTML = `
-            <h2>${newTitle}</h2>
-            <p><strong>Fällig bis:</strong> ${new Date(newDueDate).toLocaleString()}</p>
-            <p><strong>Bearbeiter:</strong> ${newAssignee}</p>
-            <p><strong>Kommentar:</strong> ${newComment}</p>
-            <div class="task-footer">
-                <button class="edit-btn">Bearbeiten</button>
-                <button class="delete-btn">Löschen</button>
-            </div>
-        `;
-        // Event-Listener wieder hinzufügen
-        const editButton = taskDiv.querySelector(".edit-btn");
-        editButton.addEventListener("click", () => editTask(taskDiv, newTitle, newDueDate, newAssignee, newComment));
-        const deleteButton = taskDiv.querySelector(".delete-btn");
-        deleteButton.addEventListener("click", () => deleteTask(taskDiv));
-        form.reset();
-        toggleForm();
-    };
-}
-// Löschen einer Aufgabe
-function deleteTask(taskDiv) {
-    taskDiv.remove();
-}
-// Laden der Startdaten aus JSON-Datei
-async function loadInitialData() {
-    showLoadingIndicator(true);
-    try {
-        const response = await fetch("tasks.json");
-        const tasks = await response.json();
-        tasks.forEach((task) => {
-            addTaskToUI(task.title, task.dueDate, task.assignee, task.comment);
-        });
-    }
-    catch (error) {
-        console.error("Fehler beim Laden der Startdaten:", error);
-    }
-    finally {
-        showLoadingIndicator(false);
     }
 }
 // Aufgabe zur Benutzeroberfläche hinzufügen
@@ -125,11 +41,69 @@ function addTaskToUI(title, dueDate, assignee, comment) {
             <button class="delete-btn">Löschen</button>
         </div>
     `;
+    taskContainer.appendChild(taskDiv);
     const editButton = taskDiv.querySelector(".edit-btn");
     editButton.addEventListener("click", () => editTask(taskDiv, title, dueDate, assignee, comment));
     const deleteButton = taskDiv.querySelector(".delete-btn");
     deleteButton.addEventListener("click", () => deleteTask(taskDiv));
-    taskContainer.appendChild(taskDiv);
+}
+// Aufgabe hinzufügen (Create)
+async function addTask(event) {
+    event.preventDefault();
+    const title = document.getElementById("task-title").value;
+    const dueDate = document.getElementById("task-due-date").value;
+    const assignee = document.getElementById("task-assignee").value;
+    const comment = document.getElementById("task-comment").value;
+    await executeQuery("insert", { title, dueDate, assignee, comment });
+    addTaskToUI(title, dueDate, assignee, comment);
+    form.reset();
+    toggleForm();
+}
+// Aufgaben aus der Datenbank laden (Read)
+async function loadTasksFromDB() {
+    showLoadingIndicator(true);
+    const tasks = await executeQuery("find", {});
+    if (tasks) {
+        tasks.forEach((task) => addTaskToUI(task.title, task.dueDate, task.assignee, task.comment));
+    }
+    showLoadingIndicator(false);
+}
+// Aufgabe bearbeiten (Update)
+function editTask(taskDiv, title, dueDate, assignee, comment) {
+    document.getElementById("task-title").value = title;
+    document.getElementById("task-due-date").value = dueDate;
+    document.getElementById("task-assignee").value = assignee;
+    document.getElementById("task-comment").value = comment;
+    toggleForm();
+    form.onsubmit = async (event) => {
+        event.preventDefault();
+        const newTitle = document.getElementById("task-title").value;
+        const newDueDate = document.getElementById("task-due-date").value;
+        const newAssignee = document.getElementById("task-assignee").value;
+        const newComment = document.getElementById("task-comment").value;
+        await executeQuery("update", { title: newTitle, dueDate: newDueDate, assignee: newAssignee, comment: newComment });
+        taskDiv.innerHTML = `
+            <h2>${newTitle}</h2>
+            <p><strong>Fällig bis:</strong> ${new Date(newDueDate).toLocaleString()}</p>
+            <p><strong>Bearbeiter:</strong> ${newAssignee}</p>
+            <p><strong>Kommentar:</strong> ${newComment}</p>
+            <div class="task-footer">
+                <button class="edit-btn">Bearbeiten</button>
+                <button class="delete-btn">Löschen</button>
+            </div>
+        `;
+        const editButton = taskDiv.querySelector(".edit-btn");
+        editButton.addEventListener("click", () => editTask(taskDiv, newTitle, newDueDate, newAssignee, newComment));
+        const deleteButton = taskDiv.querySelector(".delete-btn");
+        deleteButton.addEventListener("click", () => deleteTask(taskDiv));
+        form.reset();
+        toggleForm();
+    };
+}
+// Aufgabe löschen (Delete)
+async function deleteTask(taskDiv) {
+    await executeQuery("delete", { title: taskDiv.querySelector("h2")?.textContent });
+    taskDiv.remove();
 }
 // Anzeige für den Ladeprozess ein- und ausschalten
 function showLoadingIndicator(visible) {
@@ -140,5 +114,5 @@ function showLoadingIndicator(visible) {
 // Event-Listener initialisieren
 newTaskButton.addEventListener("click", toggleForm);
 form.addEventListener("submit", addTask);
-document.addEventListener("DOMContentLoaded", loadInitialData);
+document.addEventListener("DOMContentLoaded", loadTasksFromDB);
 //# sourceMappingURL=Typescript.js.map

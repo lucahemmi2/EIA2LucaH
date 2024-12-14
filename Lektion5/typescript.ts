@@ -2,9 +2,9 @@
 let canvas = document.querySelector("canvas") as HTMLCanvasElement;
 let crc2 = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-function random(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-}
+//function random(min: number, max: number): number {
+  //  return Math.random() * (max - min) + min;
+//}
 
 // Hilfsfunktion, um eine zufällige Farbe zu generieren
 function randomColor(): string {

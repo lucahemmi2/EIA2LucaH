@@ -1,0 +1,25 @@
+canvas {
+    display: block;
+    margin: 10px auto;
+    border: 1px solid black;
+}
+
+body {
+    background-color: rgb(130, 80, 30);
+}
+
+#logContainer {
+    border: 1px solid #000000;
+    padding: 5px;
+    margin-top: 10px;
+    max-height: 200px;
+    min-height: 150px;
+    overflow-y: auto;
+    text-align: center;
+    font-family: Verdana;
+}
+
+h1 {
+    text-align: center;
+    font-family: Verdana;
+}

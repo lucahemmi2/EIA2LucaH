@@ -1,14 +1,59 @@
 "use strict";
-// Canvas initialisieren
-const myCanvas = document.querySelector("canvas");
-const myCrc2 = myCanvas.getContext("2d");
-// Canvas-Größe anpassen
-myCanvas.width = window.innerWidth;
-myCanvas.height = window.innerHeight;
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 // Zufallszahl zwischen min und max
 function random(min, max) {
     return Math.random() * (max - min) + min;
 }
+// Canvas initialisieren
+const myCanvas = document.querySelector("canvas");
+const myCrc2 = myCanvas.getContext("2d");
+// Virtuelle Breite und Höhe der Szene
+const sceneWidth = 1920;
+const sceneHeight = 1080;
+function resizeCanvas() {
+    // Erhalte die CSS-Größe des Canvas
+    const cssWidth = myCanvas.clientWidth;
+    const cssHeight = myCanvas.clientHeight;
+    // Setze die physische Größe entsprechend der CSS-Größe und des Pixelverhältnisses
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    myCanvas.width = cssWidth * devicePixelRatio;
+    myCanvas.height = cssHeight * devicePixelRatio;
+    // Skalierung für Zeichenkontext festlegen
+    myCrc2.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    drawScene(); // Zeichne die Szene neu
+}
+function setupTransform() {
+    // Transformiere das Canvas, damit die Szene immer passt
+    const scaleX = myCanvas.width / sceneWidth;
+    const scaleY = myCanvas.height / sceneHeight;
+    const scale = Math.min(scaleX, scaleY);
+    myCrc2.setTransform(scale, 0, 0, scale, 0, 0); // Einheitliche Skalierung
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+function drawSceneResize() {
+    // Setze Transformation
+    setupTransform();
+    // Lösche Canvas
+    myCrc2.clearRect(0, 0, myCanvas.width, myCanvas.height);
+    // Zeichne alle Elemente
+    drawBackgroundSky();
+    drawSun();
+    drawMountains();
+    drawGround();
+    drawTrees();
+    drawBirds();
+    drawClouds();
+    drawSnowflakes();
+    drawBirdhouse();
+    drawRoof();
+    drawSittingBird();
+}
+// Zufallszahl-Funktion bleibt gleich
+// Zeichnen-Funktionen bleiben unverändert
+// ... (Alle anderen Zeichenmethoden bleiben unverändert)
+drawScene();
 // Zeichnet den Himmel mit einem Farbverlauf
 function drawBackgroundSky() {
     let gradient = myCrc2.createLinearGradient(0, 0, 0, myCanvas.height * 0.5);
@@ -74,35 +119,35 @@ function drawTree(x, y) {
 }
 // Vogelhäuschen zeichnen
 function drawBirdhouse() {
+    const houseWidth = myCanvas.width * 0.1; // Dynamische Breite
+    const houseHeight = myCanvas.height * 0.2; // Dynamische Höhe
     myCrc2.fillStyle = "#000000";
-    myCrc2.fillRect(myCanvas.width * 0.475, myCanvas.height * 0.8, 90, 310); //Vogelhaus-Pfosten
+    myCrc2.fillRect(houseWidth * 0.475, houseHeight * 0.8, 90, 310); //Vogelhaus-Pfosten
     myCrc2.fillStyle = "#332e2d";
     myCrc2.beginPath();
-    myCrc2.moveTo(myCanvas.width * 0.45, myCanvas.height * 0.8);
-    myCrc2.lineTo(myCanvas.width * 0.45 + 180, myCanvas.height * 0.8 - 120);
-    myCrc2.lineTo(myCanvas.width * 0.45 - 80, myCanvas.height * 0.8 - 120);
-    myCrc2.lineTo(myCanvas.width * 0.45 + 90, myCanvas.height * 0.8 - 0);
-    myCrc2.moveTo(myCanvas.width * 0.495, myCanvas.height * 0.8);
-    myCrc2.lineTo(myCanvas.width * 0.495 + 180, myCanvas.height * 0.8 - 120);
-    myCrc2.lineTo(myCanvas.width * 0.495 - 90, myCanvas.height * 0.8 - 120);
-    myCrc2.lineTo(myCanvas.width * 0.495 + 90, myCanvas.height * 0.8 - 0);
-    myCrc2.fillRect(myCanvas.width * 0.425, myCanvas.height * 0.5, 15, 120); //Support Beam 1
-    myCrc2.fillRect(myCanvas.width * 0.5, myCanvas.height * 0.5, 15, 120); // Support Beam 2
-    myCrc2.fillRect(myCanvas.width * 0.575, myCanvas.height * 0.5, 15, 120); //  Support Beam 3
+    myCrc2.moveTo(houseWidth * 0.45, houseHeight * 0.8);
+    myCrc2.lineTo(houseWidth * 0.45 + 180, houseHeight * 0.8 - 120);
+    myCrc2.lineTo(houseWidth * 0.45 - 80, houseHeight * 0.8 - 120);
+    myCrc2.lineTo(houseWidth * 0.45 + 90, houseHeight * 0.8 - 0);
+    myCrc2.moveTo(houseWidth * 0.495, houseHeight * 0.8);
+    myCrc2.lineTo(houseWidth * 0.495 + 180, houseHeight * 0.8 - 120);
+    myCrc2.lineTo(houseWidth * 0.495 - 90, houseHeight * 0.8 - 120);
+    myCrc2.lineTo(houseWidth * 0.495 + 90, houseHeight * 0.8 - 0);
+    // myCrc2.fillRect(houseWidth * 0.4, houseHeight * 0.5, 15, 120);  //Support Beam 1
+    // myCrc2.fillRect(houseWidth * 0.5, houseHeight * 0.5, 15, 120);   // Support Beam 2
+    //myCrc2.fillRect(houseWidth * 0.575, houseHeight * 0.5, 15, 120);//  Support Beam 3
     myCrc2.closePath();
     myCrc2.fill();
 }
 function drawRoof() {
+    const houseCenterX = myCanvas.width * 0.5; // Zentrum des Vogelhauses
+    const houseTopY = myCanvas.height * 0.4; // Oberer Punkt des Daches
+    const roofWidth = myCanvas.width * 0.1; // Breite des Daches
     myCrc2.fillStyle = "#453510";
     myCrc2.beginPath();
-    myCrc2.moveTo(myCanvas.width * 0.7 - 120, myCanvas.height * 0.475 + 40); //Dach
-    myCrc2.lineTo(myCanvas.width * 0.4 - 30, myCanvas.height * 0.475 + 40); // Dach
-    myCrc2.lineTo(myCanvas.width * 0.5 + 10, myCanvas.height * 0.4 + 0); //  Dach
-    myCrc2.closePath();
-    myCrc2.fill();
-    myCrc2.beginPath();
-    myCrc2.moveTo(myCanvas.width * 0.5, myCanvas.height * 0.4);
-    myCrc2.lineTo(myCanvas.width * 0.45, myCanvas.height * 0.5);
+    myCrc2.moveTo(houseCenterX, houseTopY); // Spitze des Daches
+    myCrc2.lineTo(houseCenterX - roofWidth, houseTopY + roofWidth); // Linker Punkt
+    myCrc2.lineTo(houseCenterX + roofWidth, houseTopY + roofWidth); // Rechter Punkt
     myCrc2.closePath();
     myCrc2.fill();
 }
@@ -152,9 +197,9 @@ function drawBigBird(x, y) {
 }
 // Berge zeichnen
 function drawMountains() {
-    const minY = myCanvas.height * 0.17;
+    const minY = myCanvas.height * 0.2;
     const maxY = myCanvas.height * 0.4;
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
         let x = random(0, myCanvas.width); // Zufällige X-Koordinate
         let y = random(minY, maxY); // Zufällige Y-Koordinate innerhalb des Bereichs
         drawMountain(x, y);
