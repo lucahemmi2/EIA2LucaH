@@ -49,4 +49,3 @@ function triggerCustomEvent() {
     const customEvent = new CustomEvent('customButtonClick', { bubbles: true });
     (_a = document.getElementById('customButton')) === null || _a === void 0 ? void 0 : _a.dispatchEvent(customEvent);
 }
-//# sourceMappingURL=ScriptEvent.js.map

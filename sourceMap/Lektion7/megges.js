@@ -311,4 +311,3 @@ function simulateDay() {
 document.addEventListener("DOMContentLoaded", () => {
     simulateDay();
 });
-//# sourceMappingURL=megges.js.map

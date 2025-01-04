@@ -133,4 +133,3 @@ function showLoadingIndicator(visible) {
 newTaskButton.addEventListener("click", toggleForm);
 form.addEventListener("submit", addTask);
 document.addEventListener("DOMContentLoaded", loadTasksFromDB);
-//# sourceMappingURL=Typescript.js.map
