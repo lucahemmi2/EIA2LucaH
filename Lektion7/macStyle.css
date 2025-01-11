@@ -1,25 +1,43 @@
-canvas {
-    display: block;
-    margin: 10px auto;
-    border: 1px solid black;
+body {
+    background-color:#915706; /* Helle, moderne Hintergrundfarbe */
+    color: #333; /* Dunkle Schrift für guten Kontrast */
+    font-family: 'Arial', sans-serif; /* Moderne Schriftart */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-body {
-    background-color: rgb(130, 80, 30);
+canvas {
+    display: block;
+    margin: 20px auto;
+    border: 2px solid #444; /* Dunkler Rahmen für mehr Kontrast */
+    border-radius: 8px; /* Abgerundete Ecken */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sanfter Schatten */
+    background-color: #FFFFFF; /* Weißer Hintergrund */
 }
 
 #logContainer {
-    border: 1px solid #000000;
-    padding: 5px;
-    margin-top: 10px;
+    border: 1px solid #CCC; /* Leichter Rahmen */
+    padding: 10px;
+    margin-top: 20px;
     max-height: 200px;
     min-height: 150px;
     overflow-y: auto;
-    text-align: center;
-    font-family: Verdana;
+    text-align: left; /* Bessere Lesbarkeit */
+    font-family: 'Arial', sans-serif;
+    background-color: #FFFBBB; /* Weißer Hintergrund */
+    border-radius: 8px; /* Abgerundete Ecken */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sanfter Schatten */
 }
 
 h1 {
     text-align: center;
-    font-family: Verdana;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    color: #444; /* Dunklere Schriftfarbe */
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
+

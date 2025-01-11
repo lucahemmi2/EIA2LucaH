@@ -1,3 +1,6 @@
+// Funktionen aus Tiere.ts importieren
+import { drawCow, drawChicken, drawDog, drawHorse, drawPig, drawDonkey } from "./Tiere.js";
+
 // Hilfsfunktion, um Nachrichten anzuzeigen
 function appendLog(message: string): void {
     const logContainer = document.getElementById("logContainer");
@@ -7,7 +10,6 @@ function appendLog(message: string): void {
     logMessage.textContent = message;
     logContainer.appendChild(logMessage);
 }
-
 
 // Enum for Animal Types
 enum AnimalType {
@@ -27,7 +29,7 @@ enum FoodType {
     Junk = "Junk"
 }
 
-// Animal Class
+// Base Animal Class
 class Animal {
     constructor(
         public name: string,
@@ -51,6 +53,47 @@ class Animal {
             console.log(`${this.name} the ${this.type} is still hungry!`);
         }
     }
+
+    doSpecialAction(): string {
+        return `${this.name} is doing something special.`;
+    }
+}
+
+// Specific Animal Subclasses
+class Cow extends Animal {
+    doSpecialAction(): string {
+        return `${this.name} is chewing cud.`;
+    }
+}
+
+class Chicken extends Animal {
+    doSpecialAction(): string {
+        return `${this.name} laid an egg.`;
+    }
+}
+
+class Dog extends Animal {
+    doSpecialAction(): string {
+        return `${this.name} is guarding the farm.`;
+    }
+}
+
+class Horse extends Animal {
+    doSpecialAction(): string {
+        return `${this.name} is galloping around.`;
+    }
+}
+
+class Pig extends Animal {
+    doSpecialAction(): string {
+        return `${this.name} is rolling in the mud.`;
+    }
+}
+
+class Donkey extends Animal {
+    doSpecialAction(): string {
+        return `${this.name} is carrying some hay.`;
+    }
 }
 
 // Create food supply
@@ -63,213 +106,13 @@ const foodSupply: { [key in FoodType]: number } = {
 
 // Create animals
 const animals: Animal[] = [
-    new Animal("Bessie", AnimalType.Cow, FoodType.Grass, 10, "Moo", "purple", 100, 300),
-    new Animal("Clucky", AnimalType.Chicken, FoodType.Grains, 5, "Gack", "red", 200, 350),
-    new Animal("Buddy", AnimalType.Dog, FoodType.Meat, 8, "Woof", "brown", 300, 320),
-    new Animal("Spirit", AnimalType.Horse, FoodType.Grass, 15, "Neigh", "black", 400, 300),
-    new Animal("Porky", AnimalType.Pig, FoodType.Junk, 12, "Oink", "pink", 500, 350),
-    new Animal("Eeyore", AnimalType.Donkey, FoodType.Grass, 10, "Hee-Haw", "grey", 600, 320)
+    new Cow("Bessie", AnimalType.Cow, FoodType.Grass, 10, "Moo", "purple", 100, 300),
+    new Chicken("Clucky", AnimalType.Chicken, FoodType.Grains, 5, "Gack", "red", 200, 350),
+    new Dog("Buddy", AnimalType.Dog, FoodType.Meat, 8, "Woof", "brown", 300, 320),
+    new Horse("Spirit", AnimalType.Horse, FoodType.Grass, 15, "Neigh", "black", 400, 300),
+    new Pig("Porky", AnimalType.Pig, FoodType.Junk, 12, "Oink", "pink", 500, 350),
+    new Donkey("Eeyore", AnimalType.Donkey, FoodType.Grass, 10, "Hee-Haw", "grey", 600, 320)
 ];
-
-function drawCow(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    // Kopf
-    ctx.fillStyle = "#684FA3"; // Braun
-    ctx.beginPath();
-    ctx.arc(x, y, 25, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Flecken
-    ctx.fillStyle = "#FFFFFF";
-    ctx.beginPath();
-    ctx.arc(x - 8, y + 10, 4, 20, 1 * Math.PI);
-    ctx.fill();
-    //Schnauze
-    ctx.fillStyle = "#FFC0CB";
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x - 8, y + 5);
-    ctx.lineTo(x + 8, y + 10);
-    ctx.lineTo(x + 10, y + 10);
-    ctx.lineTo(x - 8, y + 15);
-    ctx.fill();
-
-    //Augen
-    ctx.fillStyle = "#FFFFFF";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 10, 5, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 10, 5, 3, 3 * Math.PI);
-    ctx.fill();
-    ctx.fillStyle = "#000000";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 10, 2, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 10, 2, 3, 3 * Math.PI);
-    ctx.fill();
-
-    // Ohren
-    ctx.fillStyle = "#6B4226";
-    ctx.beginPath();
-    ctx.ellipse(x - 30, y - 10, 10, 5, Math.PI / 4, 0, 2 * Math.PI);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.ellipse(x + 30, y - 10, 10, 5, -Math.PI / 4, 0, 2 * Math.PI);
-    ctx.fill();
-}
-
-function drawChicken(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    // Körper
-    ctx.fillStyle = "#FFFF00"; // Gelb
-    ctx.beginPath();
-    ctx.ellipse(x, y, 15, 10, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    // Kopf
-    ctx.fillStyle = "#FFA500"; // Orange
-    ctx.beginPath();
-    ctx.arc(x + 10, y - 5, 10, 0, 2 * Math.PI);
-    ctx.fill();
-    //Augen
-    ctx.fillStyle = "#FFFFFF";
-    ctx.moveTo(x + 10, y - 10);
-    ctx.beginPath();
-    ctx.arc(x + 10, y - 10, 3, 3, 3 * Math.PI);
-    ctx.fill();
-    ctx.fillStyle = "#000000";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x + 11, y - 10, 1, 3, 3 * Math.PI);
-    ctx.fill();
-    // Schnabel
-    ctx.fillStyle = "#FF4500"; // Rot
-    ctx.beginPath();
-    ctx.moveTo(x + 20, y - 5);
-    ctx.lineTo(x + 15, y - 2);
-    ctx.lineTo(x + 15, y - 8);
-    ctx.closePath();
-    ctx.fill();
-}
-
-function drawDog(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    // Kopf
-    ctx.fillStyle = "#8B4513"; // Braun
-    ctx.beginPath();
-    ctx.arc(x, y - 10, 20, 0, 2 * Math.PI);
-    ctx.fill();
-    //Augen
-    ctx.fillStyle = "#FFFFFF";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 18, 5, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 18, 5, 3, 3 * Math.PI);
-    ctx.fill();
-    ctx.fillStyle = "#000000";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 18, 2, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 18, 2, 3, 3 * Math.PI);
-    ctx.fill();
-    // Ohren
-    ctx.fillStyle = "#000000";
-    ctx.beginPath();
-    ctx.ellipse(x - 15, y - 20, 8, 15, Math.PI / 6, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(x + 15, y - 20, 8, 15, -Math.PI / 6, 0, 2 * Math.PI);
-    ctx.fill();
-
-}
-
-function drawHorse(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    // Kopf
-    ctx.fillStyle = "#654321"; // Dunkelbraun
-    ctx.beginPath();
-    ctx.ellipse(x, y, 15, 25, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    // Mähne
-    ctx.fillStyle = "#000000"; // Schwarz
-    ctx.beginPath();
-    ctx.ellipse(x - 10, y - 15, 5, 15, Math.PI / 4, 0, 2 * Math.PI);
-    ctx.fill();
-    //Augen
-    ctx.fillStyle = "#FFFFFF";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 8, 5, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 8, 5, 3, 3 * Math.PI);
-    ctx.fill();
-    ctx.fillStyle = "#000000";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 8, 2, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 8, 2, 3, 3 * Math.PI);
-    ctx.fill();
-}
-
-function drawPig(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    // Kopf
-    ctx.fillStyle = "#FFC0CB"; // Rosa
-    ctx.beginPath();
-    ctx.arc(x, y, 20, 0, 2 * Math.PI);
-    ctx.fill();
-    // Schnauze
-    ctx.fillStyle = "#FF69B4"; // Pink
-    ctx.beginPath();
-    ctx.arc(x, y + 10, 10, 0, 2 * Math.PI);
-    ctx.fill();
-    //Nasenlöcher 
-    ctx.fillStyle = "#000000";
-    ctx.beginPath();
-    ctx.arc(x - 3, y + 10, 2, 3, 3 * Math.PI);
-    ctx.arc(x + 3, y + 10, 2, 3, 3 * Math.PI);
-    ctx.fill();
-    //Augen
-    ctx.fillStyle = "#FFFFFF";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 8, 5, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 8, 5, 3, 3 * Math.PI);
-    ctx.fill();
-    ctx.fillStyle = "#000000";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 8, 2, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 8, 2, 3, 3 * Math.PI);
-    ctx.fill();
-}
-
-function drawDonkey(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    // Ohren
-    ctx.fillStyle = "#A9A9A9";
-    ctx.beginPath();
-    ctx.ellipse(x - 10, y - 30, 5, 15, Math.PI / -10, 0, 2 * Math.PI);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.ellipse(x + 10, y - 30, 5, 15, -Math.PI / 14, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Kopf
-    ctx.fillStyle = "#808080"; // Grau
-    ctx.beginPath();
-    ctx.ellipse(x + 3, y, 20, 25, 0, 0, 2 * Math.PI);
-    ctx.fill();
-
-    //Augen
-    ctx.fillStyle = "#FFFFFF";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 10, 5, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 10, 5, 3, 3 * Math.PI);
-    ctx.fill();
-    ctx.fillStyle = "#000000";
-    ctx.moveTo(x, y - 10);
-    ctx.beginPath();
-    ctx.arc(x - 4, y - 10, 2, 3, 3 * Math.PI);
-    ctx.arc(x + 4, y - 10, 2, 3, 3 * Math.PI);
-    ctx.fill(); 
-}
-
 
 function drawFarm(): void {
     const canvas = document.getElementById("farmCanvas") as HTMLCanvasElement;
@@ -290,7 +133,6 @@ function drawFarm(): void {
 
     // Tiere zeichnen
     animals.forEach((animal) => {
-        // Tier zeichnen
         switch (animal.type) {
             case AnimalType.Cow:
                 drawCow(ctx, animal.x, animal.y);
@@ -315,11 +157,10 @@ function drawFarm(): void {
         // Name anzeigen
         ctx.fillStyle = "black";
         ctx.font = "12px Arial";
-        ctx.textAlign = "center"; // Zentrierter Text
-        ctx.fillText(animal.name, animal.x, animal.y - 30); // Über dem Tier
+        ctx.textAlign = "center";
+        ctx.fillText(animal.name, animal.x, animal.y - 30);
     });
 }
-
 
 function simulateDay(): void {
     animals.forEach((animal) => {
@@ -332,6 +173,10 @@ function simulateDay(): void {
         const foodMessage = `Remaining food for ${animal.food}: ${foodSupply[animal.food]}`;
         console.log(foodMessage);
         appendLog(foodMessage);
+
+        const specialActionMessage = animal.doSpecialAction();
+        console.log(specialActionMessage);
+        appendLog(specialActionMessage);
     });
 
     drawFarm();
