@@ -1,8 +1,8 @@
-import { drawBirdhouse, drawRoof } from './Vogelhaus.js'; // Importiere die Vogelhaus-Funktionen
-import { Snowfall } from './Snowflakes.js'; // Importiere die Schneefall-Klasse
+import { drawBirdhouse, drawRoof } from './Vogelhaus.js';
 import { drawScene } from './Szene.js';
-import { Bird } from './Birds.js'; // Importiere die Bird-Klasse
-import { BigBird } from './BigBird.js'; // Importiere die BigBird-Klasse
+import { drawFlyingBird } from './Birds.js';
+import { drawSittingBird } from './BigBird.js';
+import { Snowflake } from './Snowflake.js';
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("myCanvas");
     if (!(canvas instanceof HTMLCanvasElement)) {
@@ -16,21 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    // Erstelle Schneefall
-    const snowfall = new Snowfall(canvas.width, canvas.height, myCrc2);
-    snowfall.generateSnowflakes(200);
-    // Erstelle Array für fliegende Vögel
-    const birds = [];
-    const birdCount = 20; // Anzahl der Vögel
+    const moveables = [];
+    // Fliegende Vögel hinzufügen
+    const birdCount = 20;
     for (let i = 0; i < birdCount; i++) {
-        const x = Math.random() * canvas.width; // Zufällige Startposition
-        const y = Math.random() * canvas.height * 0.5 + 280; // Im oberen Bereich
-        const speedX = -(Math.random() * 2 + 1); // Geschwindigkeit von 1 bis 3 Pixel
-        birds.push(new Bird(x, y, speedX, canvas.width, canvas.height));
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height * 0.5 + 280;
+        const speedX = -(Math.random() * 2 + 1);
+        moveables.push(new drawFlyingBird(x, y, speedX, canvas.width, canvas.height));
     }
-    // Erstelle Array für sitzende Vögel
-    const bigBirds = [];
-    const bigBirdCount = 2; // Anzahl der sitzenden Vögel
+    // Sitzende Vögel hinzufügen
+    const bigBirdCount = 2;
     const minY = canvas.height * 0.65;
     const maxY = canvas.height * 0.67;
     const minX = canvas.width * 0.3 + 150;
@@ -38,34 +34,41 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < bigBirdCount; i++) {
         const x = Math.random() * (maxX - minX) + minX;
         const y = Math.random() * (maxY - minY) + minY;
-        const speedX = 0.05 + Math.random() * 0.1; // Langsame Bewegung
-        bigBirds.push(new BigBird(x, y, speedX, minX, maxX));
+        const speedX = 0.05 + Math.random() * 0.1;
+        moveables.push(new drawSittingBird(x, y, speedX, minX, maxX));
+    }
+    // Schneeflocken hinzufügen
+    const snowflakeCount = 200;
+    for (let i = 0; i < snowflakeCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speedX = Math.random() * 1 + 0.5;
+        moveables.push(new Snowflake(x, y, speedX, canvas.height));
     }
     function animate(timestamp) {
-        // Canvas leeren
         myCrc2.clearRect(0, 0, canvas.width, canvas.height);
-        // Statische Szene zeichnen (Hintergrund)
+        // 1. Hintergrundszene zeichnen
         drawScene(myCrc2);
-        // Vögel aus Birds.ts aktualisieren und zeichnen (Hintergrund-Vögel)
-        for (const bird of birds) {
-            bird.update();
-            bird.drawBirds(myCrc2);
+        // 2. Vögel im Hintergrund zeichnen
+        for (const moveable of moveables) {
+            if (moveable instanceof drawFlyingBird) {
+                moveable.update(timestamp);
+                moveable.draw(myCrc2);
+            }
         }
-        // Vogelhaus und Dach zeichnen (im Vordergrund)
+        // 3. Vogelhaus und Dach zeichnen
         drawBirdhouse(myCrc2);
         drawRoof(myCrc2);
-        // Vögel aus BigBird.ts aktualisieren und zeichnen (Vordergrund-Vögel)
-        for (const bigBird of bigBirds) {
-            bigBird.update(timestamp);
-            bigBird.draw(myCrc2);
+        // 4. Vögel im Vordergrund zeichnen
+        for (const moveable of moveables) {
+            if (moveable instanceof drawSittingBird) {
+                moveable.update(timestamp);
+                moveable.draw(myCrc2);
+            }
         }
-        // Schneeflocken aktualisieren und zeichnen
-        snowfall.update();
-        snowfall.draw();
-        // Animation fortsetzen
+        // 5. Animationsloop fortsetzen
         requestAnimationFrame(animate);
     }
-    // Animation starten
     animate(0);
 });
 //# sourceMappingURL=Winter.js.map

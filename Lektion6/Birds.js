@@ -1,10 +1,11 @@
-export class Bird {
+export class drawFlyingBird {
     constructor(x, y, speedX, canvasWidth, canvasHeight) {
         this.x = x;
         this.y = y;
         this.speedX = speedX;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
+        this.color = this.randomBirdColor(); // Zufällige Farbe wird im Konstruktor festgelegt
     }
     update() {
         this.x += this.speedX;
@@ -16,7 +17,7 @@ export class Bird {
             this.x = this.canvasWidth; // Startet erneut von rechts
         }
     }
-    drawBirds(ctx) {
+    draw(ctx) {
         // Schnabel
         ctx.fillStyle = "#FFA500";
         ctx.beginPath();
@@ -26,13 +27,13 @@ export class Bird {
         ctx.closePath();
         ctx.fill();
         // Körper
-        ctx.fillStyle = this.randomBirdColor();
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.ellipse(this.x, this.y, 10, 6, 0, 0, 2 * Math.PI);
         ctx.ellipse(this.x + 5, this.y, 10, 3, 3, 0, 2 * Math.PI);
         ctx.fill();
         // Flügel
-        ctx.fillStyle = this.randomBirdColor();
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.ellipse(this.x + 5, this.y - 5, 12.5, 5, -0.5, 0, 2 * Math.PI);
         ctx.fill();

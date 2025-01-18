@@ -1,9 +1,10 @@
-export class Bird {
+export class drawFlyingBird {
     x: number;
     y: number;
     speedX: number;
     canvasWidth: number;
     canvasHeight: number;
+    color: string; // Farbe wird als Eigenschaft hinzugefügt
 
     constructor(
         x: number,
@@ -17,6 +18,7 @@ export class Bird {
         this.speedX = speedX;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
+        this.color = this.randomBirdColor(); // Zufällige Farbe wird im Konstruktor festgelegt
     }
 
     update(): void {
@@ -30,7 +32,7 @@ export class Bird {
         }
     }
 
-    drawBirds(ctx: CanvasRenderingContext2D): void {
+    draw(ctx: CanvasRenderingContext2D): void { // Methode umbenannt
         // Schnabel
         ctx.fillStyle = "#FFA500";
         ctx.beginPath();
@@ -41,14 +43,14 @@ export class Bird {
         ctx.fill();
 
         // Körper
-        ctx.fillStyle = this.randomBirdColor();
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.ellipse(this.x, this.y, 10, 6, 0, 0, 2 * Math.PI);
         ctx.ellipse(this.x + 5, this.y, 10, 3, 3, 0, 2 * Math.PI);
         ctx.fill();
 
         // Flügel
-        ctx.fillStyle = this.randomBirdColor();
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.ellipse(this.x + 5, this.y - 5, 12.5, 5, -0.5, 0, 2 * Math.PI);
         ctx.fill();
@@ -60,3 +62,4 @@ export class Bird {
         return colors[Math.floor(Math.random() * colors.length)];
     }
 }
+    

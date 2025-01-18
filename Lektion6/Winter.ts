@@ -1,88 +1,91 @@
-    import { drawBirdhouse, drawRoof } from './Vogelhaus.js'; // Importiere die Vogelhaus-Funktionen
-    import { Snowfall } from './Snowflakes.js'; // Importiere die Schneefall-Klasse
-    import { drawScene } from './Szene.js';
-    import { Bird } from './Birds.js'; // Importiere die Bird-Klasse
-    import { BigBird } from './BigBird.js'; // Importiere die BigBird-Klasse
+import { drawBirdhouse, drawRoof } from './Vogelhaus.js';
+import { drawScene } from './Szene.js';
+import { drawFlyingBird } from './Birds.js';
+import { drawSittingBird } from './BigBird.js';
+import { Snowflake } from './Snowflake.js';
+import { Moveable } from './Moveable.js';
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const canvas = document.getElementById("myCanvas");
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("myCanvas");
 
-        if (!(canvas instanceof HTMLCanvasElement)) {
-            console.error("Das Canvas-Element wurde nicht gefunden.");
-            return;
-        }
+    if (!(canvas instanceof HTMLCanvasElement)) {
+        console.error("Das Canvas-Element wurde nicht gefunden.");
+        return;
+    }
 
-        const myCrc2 = canvas.getContext("2d");
+    const myCrc2 = canvas.getContext("2d");
 
-        if (!myCrc2) {
-            console.error("Der 2D-Kontext konnte nicht erstellt werden.");
-            return;
-        }
+    if (!myCrc2) {
+        console.error("Der 2D-Kontext konnte nicht erstellt werden.");
+        return;
+    }
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        // Erstelle Schneefall
-        const snowfall = new Snowfall(canvas.width, canvas.height, myCrc2);
-        snowfall.generateSnowflakes(200);
+    const moveables: Moveable[] = [];
 
-        // Erstelle Array für fliegende Vögel
-        const birds: Bird[] = [];
-        const birdCount = 20; // Anzahl der Vögel
-        for (let i = 0; i < birdCount; i++) {
-            const x = Math.random() * canvas.width; // Zufällige Startposition
-            const y = Math.random() * canvas.height * 0.5 + 280; // Im oberen Bereich
-            const speedX = -(Math.random() * 2 + 1); // Geschwindigkeit von 1 bis 3 Pixel
-            birds.push(new Bird(x, y, speedX, canvas.width, canvas.height));
-        }
+    // Fliegende Vögel hinzufügen
+    const birdCount = 20;
+    for (let i = 0; i < birdCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height * 0.5 + 280;
+        const speedX = -(Math.random() * 2 + 1);
+        moveables.push(new drawFlyingBird(x, y, speedX, canvas.width, canvas.height));
+    }
 
-        // Erstelle Array für sitzende Vögel
-        const bigBirds: BigBird[] = [];
-        const bigBirdCount = 2; // Anzahl der sitzenden Vögel
-        const minY = canvas.height * 0.65;
-        const maxY = canvas.height * 0.67;
-        const minX = canvas.width * 0.3 + 150; 
-        const maxX = canvas.width * 0.5 ;
+    // Sitzende Vögel hinzufügen
+    const bigBirdCount = 2;
+    const minY = canvas.height * 0.65;
+    const maxY = canvas.height * 0.67;
+    const minX = canvas.width * 0.3 + 150;
+    const maxX = canvas.width * 0.5;
 
-        for (let i = 0; i < bigBirdCount; i++) {
-            const x = Math.random() * (maxX - minX) + minX;
-            const y = Math.random() * (maxY - minY) + minY;
-            const speedX = 0.05 + Math.random() * 0.1; // Langsame Bewegung
-            bigBirds.push(new BigBird(x, y, speedX, minX, maxX));
-        }
+    for (let i = 0; i < bigBirdCount; i++) {
+        const x = Math.random() * (maxX - minX) + minX;
+        const y = Math.random() * (maxY - minY) + minY;
+        const speedX = 0.05 + Math.random() * 0.1;
+        moveables.push(new drawSittingBird(x, y, speedX, minX, maxX));
+    }
 
-        function animate(timestamp: number): void {
-            // Canvas leeren
-            myCrc2.clearRect(0, 0, canvas.width, canvas.height);
-        
-            // Statische Szene zeichnen (Hintergrund)
-            drawScene(myCrc2);
-        
-            // Vögel aus Birds.ts aktualisieren und zeichnen (Hintergrund-Vögel)
-            for (const bird of birds) {
-                bird.update();
-                bird.drawBirds(myCrc2);
+    // Schneeflocken hinzufügen
+    const snowflakeCount = 200;
+    for (let i = 0; i < snowflakeCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speedX = Math.random() * 1 + 0.5;
+        moveables.push(new Snowflake(x, y, speedX, canvas.height));
+    }
+
+    function animate(timestamp: number): void {
+        myCrc2.clearRect(0, 0, canvas.width, canvas.height);
+    
+        // 1. Hintergrundszene zeichnen
+        drawScene(myCrc2);
+    
+        // 2. Vögel im Hintergrund zeichnen
+        for (const moveable of moveables) {
+            if (moveable instanceof drawFlyingBird) {
+                moveable.update(timestamp);
+                moveable.draw(myCrc2);
             }
-        
-            // Vogelhaus und Dach zeichnen (im Vordergrund)
-            drawBirdhouse(myCrc2);
-            drawRoof(myCrc2);
-        
-            // Vögel aus BigBird.ts aktualisieren und zeichnen (Vordergrund-Vögel)
-            for (const bigBird of bigBirds) {
-                bigBird.update(timestamp);
-                bigBird.draw(myCrc2);
-            }
-        
-            // Schneeflocken aktualisieren und zeichnen
-            snowfall.update();
-            snowfall.draw();
-        
-            // Animation fortsetzen
-            requestAnimationFrame(animate);
         }
-        
+    
+        // 3. Vogelhaus und Dach zeichnen
+        drawBirdhouse(myCrc2);
+        drawRoof(myCrc2);
+    
+        // 4. Vögel im Vordergrund zeichnen
+        for (const moveable of moveables) {
+            if (moveable instanceof drawSittingBird) {
+                moveable.update(timestamp);
+                moveable.draw(myCrc2);
+            }
+        }
+    
+        // 5. Animationsloop fortsetzen
+        requestAnimationFrame(animate);
+    }
 
-        // Animation starten
-        animate(0);
-    });
+    animate(0);
+});

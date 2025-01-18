@@ -1,12 +1,13 @@
-export class BigBird {
+import { Moveable } from './Movable.js'; // Importiere die Superklasse
+export class drawSittingBird extends Moveable {
     constructor(x, y, speedX, minX, maxX) {
+        super(x, y, speedX);
         this.direction = 1;
         this.lastPauseTime = 0;
-        this.x = x;
-        this.y = y;
-        this.speedX = speedX;
         this.minX = minX;
         this.maxX = maxX;
+        this.bodyColor = this.randomBirdColor(); // Farbe wird einmalig im Konstruktor gesetzt
+        this.wingColor = this.randomBirdColor(); // Flügelfarbe ebenfalls einmalig gesetzt
     }
     update(timestamp) {
         if (timestamp - this.lastPauseTime > 2000) {
@@ -18,19 +19,22 @@ export class BigBird {
         }
     }
     draw(ctx) {
-        ctx.fillStyle = "#FFA500"; // Schnabel
+        // Schnabel
+        ctx.fillStyle = "#FFA500";
         ctx.beginPath();
         ctx.moveTo(this.x - 40, this.y - 20);
         ctx.lineTo(this.x - 7, this.y - 22);
         ctx.lineTo(this.x - 7, this.y + 2);
         ctx.closePath();
         ctx.fill();
-        ctx.fillStyle = this.randomBirdColor(); // Körper
+        // Körper
+        ctx.fillStyle = this.bodyColor; // Verwende die gespeicherte Körperfarbe
         ctx.beginPath();
         ctx.ellipse(this.x, this.y - 10, 30, 18, 45, 0, 2 * Math.PI);
         ctx.ellipse(this.x + 10, this.y, 20, 12, 3, 0, 2 * Math.PI);
         ctx.fill();
-        ctx.fillStyle = this.randomBirdColor(); // Flügel
+        // Flügel
+        ctx.fillStyle = this.wingColor; // Verwende die gespeicherte Flügelfarbe
         ctx.beginPath();
         ctx.ellipse(this.x + 5, this.y - 5, 25, 15, 45, 0, 2 * Math.PI);
         ctx.fill();

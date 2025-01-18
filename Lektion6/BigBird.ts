@@ -1,18 +1,19 @@
-export class BigBird {
-    x: number;
-    y: number;
-    speedX: number;
-    minX: number;
-    maxX: number;
-    direction: number = 1;
-    lastPauseTime: number = 0;
+import { Moveable } from './Movable.js'; // Importiere die Superklasse
+
+export class drawSittingBird extends Moveable {
+    private minX: number;
+    private maxX: number;
+    private direction: number = 1;
+    private lastPauseTime: number = 0;
+    private bodyColor: string; // Einmalig generierte Farbe für den Körper
+    private wingColor: string; // Einmalig generierte Farbe für die Flügel
 
     constructor(x: number, y: number, speedX: number, minX: number, maxX: number) {
-        this.x = x;
-        this.y = y;
-        this.speedX = speedX;
+        super(x, y, speedX);
         this.minX = minX;
         this.maxX = maxX;
+        this.bodyColor = this.randomBirdColor(); // Farbe wird einmalig im Konstruktor gesetzt
+        this.wingColor = this.randomBirdColor(); // Flügelfarbe ebenfalls einmalig gesetzt
     }
 
     update(timestamp: number): void {
@@ -26,7 +27,8 @@ export class BigBird {
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = "#FFA500"; // Schnabel
+        // Schnabel
+        ctx.fillStyle = "#FFA500";
         ctx.beginPath();
         ctx.moveTo(this.x - 40, this.y - 20);
         ctx.lineTo(this.x - 7, this.y - 22);
@@ -34,13 +36,15 @@ export class BigBird {
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = this.randomBirdColor(); // Körper
+        // Körper
+        ctx.fillStyle = this.bodyColor; // Verwende die gespeicherte Körperfarbe
         ctx.beginPath();
         ctx.ellipse(this.x, this.y - 10, 30, 18, 45, 0, 2 * Math.PI);
         ctx.ellipse(this.x + 10, this.y, 20, 12, 3, 0, 2 * Math.PI);
         ctx.fill();
 
-        ctx.fillStyle = this.randomBirdColor(); // Flügel
+        // Flügel
+        ctx.fillStyle = this.wingColor; // Verwende die gespeicherte Flügelfarbe
         ctx.beginPath();
         ctx.ellipse(this.x + 5, this.y - 5, 25, 15, 45, 0, 2 * Math.PI);
         ctx.fill();
